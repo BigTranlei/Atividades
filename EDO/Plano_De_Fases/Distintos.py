@@ -11,8 +11,6 @@ x = np.zeros((N+1, 2))
 x[0, :] = [1.0, 3.0]
 
 # função do sistema
-
-
 def f(x):
     x1, x2 = x
     return np.array([x2, -4.0*x1 - 5.0*x2])
