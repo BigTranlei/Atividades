@@ -27,24 +27,22 @@ y_exact = np.exp(r*t)*(1*np.cos(w*t) + ((3 - r*1)/w)*np.sin(w*t))
 yp_exact = np.gradient(y_exact, h)  # derivada numérica p/ plot no plano de fase
 
 # grade para o campo de vetores
-x1_vals = np.linspace(-3, 3, 20)   # y (vertical)
-x2_vals = np.linspace(-6, 6, 20)   # y' (horizontal)
+x1_vals = np.linspace(-6, 6, 20)   # y
+x2_vals = np.linspace(-3, 3, 20)   # y'
 X1, X2 = np.meshgrid(x1_vals, x2_vals)
 
 # Campo de vetores
 dX1 = X2
 dX2 = -5*X1 - 4*X2
-U = dX2  # horizontal = variação de x2
-V = dX1  # vertical   = variação de x1
 
 # normalizar para visualização
-Nrm = np.sqrt(U**2 + V**2)
+Nrm = np.sqrt(dX2**2 + dX1**2)
 Nrm[Nrm == 0] = 1.0
-U2 = U / Nrm
-V2 = V / Nrm
+dX2n = dX2 / Nrm
+dX1n = dX1 / Nrm
 
 plt.figure(figsize=(8,6))
-plt.quiver(X2, X1, U2, V2, angles='xy', alpha=0.6)
+plt.quiver(X2, X1, dX2n, dX1n, angles='xy', alpha=0.6)
 
 # trajetória Euler
 plt.plot(x[:,1], x[:,0], '-o', markersize=3, label=f'Euler h={h}')
@@ -57,6 +55,6 @@ plt.ylabel("x1 = y")
 plt.title("Plano de fase (espiral estável: y', y )")
 plt.legend()
 plt.grid(True)
-plt.xlim(-6, 6)
-plt.ylim(-3, 3)
+plt.xlim(-3, 3)
+plt.ylim(-6, 6)
 plt.show()
