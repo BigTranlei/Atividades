@@ -24,7 +24,8 @@ t = np.linspace(0, T, N+1)
 r, w = -2, 1  # parte real e imaginária dos autovalores
 # Cálculo de C1 e C2
 y_exact = np.exp(r*t)*(1*np.cos(w*t) + ((3 - r*1)/w)*np.sin(w*t))
-yp_exact = np.gradient(y_exact, h)  # derivada numérica p/ plot no plano de fase
+yp_exact = np.exp(-2*t) * ( 3*np.cos(t) - 11*np.sin(t) )
+
 
 # grade para o campo de vetores
 x1_vals = np.linspace(-6, 6, 20)   # y
