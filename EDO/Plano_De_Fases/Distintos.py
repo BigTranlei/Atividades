@@ -20,8 +20,8 @@ for n in range(N):
     x[n+1] = x[n] + h * f(x[n])
 
 # grade para o campo de vetores
-x1_vals = np.linspace(-3, 3, 20)   # y
-x2_vals = np.linspace(-6, 6, 20)   # y'
+x1_vals = np.linspace(-6, 6, 20)   # y
+x2_vals = np.linspace(-3, 3, 20)   # y'
 X1, X2 = np.meshgrid(x1_vals, x2_vals)
 
 # Campo de vetores
@@ -29,7 +29,7 @@ dX1 = X2
 dX2 = -4*X1 - 5*X2
 
 # normalizar para visualização
-Nrm = np.sqrt(U**2 + V**2)
+Nrm = np.sqrt(dX1**2 + dX2**2)
 Nrm[Nrm == 0] = 1.0
 dX2n = dX2 / Nrm
 dX1n = dX1 / Nrm
@@ -43,6 +43,6 @@ plt.ylabel("x1 = y")
 plt.title("Plano de fase (y', y)")
 plt.legend()
 plt.grid(True)
-plt.xlim(-6, 6)
-plt.ylim(-3, 3)
+plt.xlim(-3, 3)
+plt.ylim(-6, 6)
 plt.show()
