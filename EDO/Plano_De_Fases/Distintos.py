@@ -19,6 +19,11 @@ def f(x):
 for n in range(Numero):
     Conjunto_Solucao[n+1] = Conjunto_Solucao[n] + Passo*f(Conjunto_Solucao[n])
 
+    # pontos de tempo para a solução exata
+t = np.linspace(0, Tempo, Numero+1)
+y_exact = ((7/3) * np.exp(-1.0*t)) - ((4/3) * np.exp(-4.0*t))
+yp_exact = ((-7/3) * np.exp(-1.0*t)) + ((16/3) * np.exp(-4.0*t))
+
 # campo
     #Grade
 x1_valores = np.linspace(-6,6,20) #-> vertical
@@ -39,10 +44,11 @@ dConjunto_Solucao2n = dConjunto_Solucao2/Nrm
 plt.figure(figsize=(8,6))
 plt.quiver(Conjunto_Solucao2,Conjunto_Solucao1,dConjunto_Solucao2n,dConjunto_Solucao1n, angles='xy' , alpha = 0.6)
 plt.plot(Conjunto_Solucao[:,1], Conjunto_Solucao[:,0] ,'-o', markersize=3 , label = 'progressivo')
+plt.plot(yp_exact, y_exact, '-', lw=2, label='Solução exata')
 plt.plot(Conjunto_Solucao[0,1], Conjunto_Solucao[0,0], 'ks', label='início (1,3)')
 plt.xlabel("x2 = y'")
 plt.ylabel("x1 = y")
-plt.title("Plano de fase (y' no eixo horizontal, y no vertical)")
+plt.title("Plano de fase (y' , y)")
 plt.legend()
 plt.grid(True)
 plt.xlim(-3, 3)
