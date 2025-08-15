@@ -15,9 +15,13 @@ def f(x):
     x1, x2 = x
     return np.array([x2, -5.0*x1 - 4.0*x2])
 
-# Euler explícito
+# Euler explícito 
 for n in range(N):
     x[n+1] = x[n] + h * f(x[n])
+
+# Euler regressivo
+'''for n in range(N):
+    x[n+1] = np.linalg.solve(np.eye(2) - h*np.array([[0, 1], [-5, -4]]), x[n])'''
 
 # solução exata
 t = np.linspace(0, T, N+1)

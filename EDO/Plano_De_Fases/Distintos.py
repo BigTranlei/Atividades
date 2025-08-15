@@ -12,14 +12,14 @@ Conjunto_Solucao[0, :] = [1.0, 3.0]  # C.I
 # def   sistema:
     #Def sistema
 def f(x):
-    x1, x2 = x
-    return np.array([x2, -4*x1-5*x2])
+    x1, x2 = x # y'
+    return np.array([x2, -4*x1-5*x2]) # y''
     
     #Interações
 for n in range(Numero):
     Conjunto_Solucao[n+1] = Conjunto_Solucao[n] + Passo*f(Conjunto_Solucao[n])
 
-    # pontos de tempo para a solução exata
+    # pontos de tempo para a solução exata (Mexer)
 t = np.linspace(0, Tempo, Numero+1)
 y_exact = ((7/3) * np.exp(-1.0*t)) - ((4/3) * np.exp(-4.0*t))
 yp_exact = ((-7/3) * np.exp(-1.0*t)) + ((16/3) * np.exp(-4.0*t))
