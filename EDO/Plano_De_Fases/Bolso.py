@@ -79,27 +79,47 @@ def campo_vetorial_auto(f_sys, ys, vs, dens=20):
     return Y, V, dY/norm, dV/norm
 
 # =========================
-# Exemplo: y'' + 4y = 0
+# DEFINA SUA EDO AQUI
 # =========================
-f = lambda t, y, v: -4*y   # Isolar o y''
-y_exata = lambda t: np.cos(2*t)   # None caso não saiba
-v_exata = lambda t: -2*np.sin(2*t) # None caso não saiba
+# Exemplo: y'' + 4y' + 5y = 2
+#f = lambda t, y, v: -4*v - 5*y + 2
 
-# Caso necessario
-y0, v0, T = 1.0, 0.0, 10.0
-h = 0.1
+# Exemplo: y'' + 4 y' = 0  =>  y'' = -4 y'
+f = lambda t, y, v: -4.0 * v
 
-# Soluções numéricas
+# Se tiver solução exata, defina-a; senão, use None
+#y_exata = None
+#v_exata = None
+
+# Se souber a solução exata, defina-a (opcional)
+# Para y'' + 4 y' = 0 com y(0)=1, y'(0)=0 a solução exata é y(t)=1
+y_exata = lambda t: 1.0 + 0*t
+v_exata = lambda t: 0.0 + 0*t
+
+# Condições iniciais e parâmetros
+y0, v0 = 1.0, 3.0
+T, h = 10.0, 0.1
+
+# =========================
+# Cálculo numérico
+# =========================
 t1, y1, v1 = euler_forward(f, 0, y0, v0, h, T)
 t2, y2, v2 = euler_backward(f, 0, y0, v0, h, T)
 t3, y3, v3 = central_diff(f, 0, y0, v0, h, T)
-t_exact = np.linspace(0, T, 1000)
-y_exact_vals = y_exata(t_exact)
-v_exact_vals = v_exata(t_exact)
+
+# Se existir solução exata
+if y_exata is not None:
+    t_exact = np.linspace(0, T, 1000)
+    y_exact_vals = y_exata(t_exact)
+    v_exact_vals = v_exata(t_exact) if v_exata is not None else None
+else:
+    t_exact = None
+    y_exact_vals = None
+    v_exact_vals = None
 
 # Campo vetorial cobrindo todo o plano de fase
-ys_all = np.concatenate([y1, y2, y3, y_exact_vals])
-vs_all = np.concatenate([v1, v2, v3, v_exact_vals])
+ys_all = np.concatenate([y1, y2, y3] + ([y_exact_vals] if y_exact_vals is not None else []))
+vs_all = np.concatenate([v1, v2, v3] + ([v_exact_vals] if v_exact_vals is not None else []))
 Y, V, dY, dV = campo_vetorial_auto(f, ys_all, vs_all, dens=25)
 
 # Plano de fase
@@ -108,7 +128,8 @@ plt.quiver(Y, V, dY, dV, angles='xy', alpha=0.3, color='gray')
 plt.plot(y1, v1, 'b-o', markevery=5, label='Euler prog.')
 plt.plot(y2, v2, 'orange', marker='s', markevery=5, label='Euler reg.')
 plt.plot(y3, v3, 'g-', marker='.', markevery=5, label='Dif. central')
-plt.plot(y_exact_vals, v_exact_vals, 'k-', lw=2, label='Solução exata')
+if y_exact_vals is not None and v_exact_vals is not None:
+    plt.plot(y_exact_vals, v_exact_vals, 'k-', lw=2, label='Solução exata')
 plt.plot(y0, v0, 'ks', label='início')
 plt.xlabel("y")
 plt.ylabel("y'")
@@ -121,7 +142,8 @@ plt.figure()
 plt.plot(t1, y1, 'b-', label='Euler prog.')
 plt.plot(t2, y2, 'orange', label='Euler reg.')
 plt.plot(t3, y3, 'g-', label='Dif. central')
-plt.plot(t_exact, y_exact_vals, 'k--', label='Solução exata')
+if y_exact_vals is not None:
+    plt.plot(t_exact, y_exact_vals, 'k--', label='Solução exata')
 plt.xlabel('t')
 plt.ylabel('y(t)')
 plt.title("Evolução no tempo")
@@ -130,14 +152,16 @@ plt.grid(True)
 plt.show()
 
 # C e p para o método central
-C, p, hs, erros = estimar_C_p(central_diff, f, y_exata, y0, v0, T)
-print(f"Constante C ≈ {C:.6f}, ordem p ≈ {p:.6f}")
-print("hs:", hs)
-print("erros:", erros)
+if y_exata is not None:
+    C, p, hs, erros = estimar_C_p(central_diff, f, y_exata, y0, v0, T)
+    print(f"Constante C ≈ {C:.6f}, ordem p ≈ {p:.6f}")
+    print("hs:", hs)
+    print("erros:", erros)
 
-# Taxa de recorrência (linear com coef. constantes)
-a = 2 - 4*h**2
-disc = a**2 - 4
-lambda1 = (a + np.sqrt(complex(disc))) / 2
-lambda2 = (a - np.sqrt(complex(disc))) / 2
-print(f"Taxas de recorrência λ1={lambda1}, λ2={lambda2}")
+# Taxa de recorrência (linear com coef. constantes e homogênea)
+if True:  # pode colocar detecção automática depois
+    a = 2 - 4*h**2
+    disc = a**2 - 4
+    lambda1 = (a + np.sqrt(complex(disc))) / 2
+    lambda2 = (a - np.sqrt(complex(disc))) / 2
+    print(f"Taxas de recorrência λ1={lambda1}, λ2={lambda2}")
